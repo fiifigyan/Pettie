@@ -1,4 +1,4 @@
 /build
 
 # Add google service
-*.google-service.json
+/google-service.json
