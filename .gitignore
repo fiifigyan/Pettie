@@ -15,5 +15,5 @@
 local.properties
 
 
-#Add google service json file
-*.google-service.json
+# Firebase config
+google-services.json
