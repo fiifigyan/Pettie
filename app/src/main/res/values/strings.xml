@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Pettie</string>
+    <string name="login">Log In</string>
+    <string name="register">Register</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="display_name">Display Name</string>
+    <string name="home">Home</string>
+    <string name="search">Search</string>
+    <string name="sell">Sell</string>
+    <string name="favorites">Favorites</string>
+    <string name="profile">Profile</string>
+</resources>
