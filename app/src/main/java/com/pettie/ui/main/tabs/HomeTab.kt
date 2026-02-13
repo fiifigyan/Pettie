@@ -27,7 +27,8 @@ import com.pettie.ui.main.home.components.PetListingCard
 
 @Composable
 fun HomeTab(
-    viewModel: HomeListingsViewModel = hiltViewModel()
+    viewModel: HomeListingsViewModel = hiltViewModel(),
+    onNavigateToPetDetail: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -118,19 +119,23 @@ fun HomeTab(
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
+                        
+                        Text(
+                            text = "Average Price: $${"%.2f".format(state.averagePrice)}",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
                     }
                 }
 
                 items(state.listings, key = { it.id }) { listing ->
                     PetListingCard(
                         listing = listing,
-                        onClick = {
-                            // Detail screen can be wired here in a later step.
-                        }
+                        onClick = { onNavigateToPetDetail(listing.id) }
                     )
                 }
             }
         }
     }
 }
-

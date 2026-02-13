@@ -31,6 +31,7 @@ import com.pettie.ui.main.tabs.SellTab
 @Composable
 fun MainTabsScreen(
     onSignOut: () -> Unit = {},
+    onNavigateToPetDetail: (String) -> Unit,
     navController: NavHostController = rememberNavController()
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -72,7 +73,7 @@ fun MainTabsScreen(
             startDestination = "home",
             modifier = Modifier.padding(padding)
         ) {
-            composable("home") { HomeTab() }
+            composable("home") { HomeTab(onNavigateToPetDetail = onNavigateToPetDetail) }
             composable("search") { SearchTab() }
             composable("sell") { SellTab() }
             composable("favorites") { FavoritesTab() }

@@ -1,5 +1,6 @@
 package com.pettie.ui.main.tabs
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pettie.data.repository.PetListingRepository
@@ -20,10 +21,14 @@ class SellViewModel @Inject constructor(
 
     fun createListing(
         title: String,
+        description: String,
         species: String,
+        breed: String,
+        age: String,
+        gender: String,
         price: String,
         location: String,
-        description: String
+        imageUris: List<Uri>
     ) {
         val numericPrice = price.toDoubleOrNull()
 
@@ -37,24 +42,30 @@ class SellViewModel @Inject constructor(
                 _uiState.value = SellUiState.Error("Please enter a valid price")
                 return
             }
+
+            imageUris.isEmpty() -> {
+                _uiState.value = SellUiState.Error("Please select at least one image")
+                return
+            }
         }
 
         viewModelScope.launch {
             _uiState.value = SellUiState.Loading
-            repository
-                .createListing(
-                    title = title,
-                    description = description,
-                    species = species,
-                    price = numericPrice,
-                    location = location
-                )
-                .onSuccess {
-                    _uiState.value = SellUiState.Success
-                }
-                .onFailure { error ->
-                    _uiState.value = SellUiState.Error(error.message ?: "Failed to create listing")
-                }
+            repository.createListing(
+                title = title,
+                description = description,
+                species = species,
+                breed = breed,
+                age = age,
+                gender = gender,
+                price = numericPrice,
+                location = location,
+                imageUris = imageUris
+            ).onSuccess {
+                _uiState.value = SellUiState.Success
+            }.onFailure { error ->
+                _uiState.value = SellUiState.Error(error.message ?: "Failed to create listing")
+            }
         }
     }
 
@@ -69,4 +80,3 @@ sealed class SellUiState {
     object Success : SellUiState()
     data class Error(val message: String) : SellUiState()
 }
-

@@ -6,13 +6,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.pettie.ui.auth.ForgotPasswordScreen
 import com.pettie.ui.auth.LoginScreen
 import com.pettie.ui.auth.RegisterScreen
 import com.pettie.ui.main.MainTabsScreen
+import com.pettie.ui.main.detail.PetDetailScreen
 
 @Composable
 fun PettieNavHost(
@@ -69,8 +72,18 @@ fun PettieNavHost(
                     navController.navigate(NavRoutes.LOGIN) {
                         popUpTo(NavRoutes.MAIN_TABS) { inclusive = true }
                     }
+                },
+                onNavigateToPetDetail = { petId ->
+                    navController.navigate("pet_detail/$petId")
                 }
             )
+        }
+
+        composable(
+            route = NavRoutes.PET_DETAIL,
+            arguments = listOf(navArgument("petId") { type = NavType.StringType })
+        ) {
+            PetDetailScreen()
         }
     }
 }

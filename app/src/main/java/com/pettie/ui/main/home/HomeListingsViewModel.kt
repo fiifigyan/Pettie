@@ -31,7 +31,9 @@ class HomeListingsViewModel @Inject constructor(
                         _uiState.value = if (listings.isEmpty()) {
                             HomeListingsUiState.Empty
                         } else {
-                            HomeListingsUiState.Success(listings)
+                            val total = listings.sumOf { it.price }
+                            val average = if (listings.isNotEmpty()) total / listings.size else 0.0
+                            HomeListingsUiState.Success(listings, average)
                         }
                     }
                     .onFailure { error ->
@@ -45,7 +47,6 @@ class HomeListingsViewModel @Inject constructor(
 sealed class HomeListingsUiState {
     object Loading : HomeListingsUiState()
     object Empty : HomeListingsUiState()
-    data class Success(val listings: List<PetListing>) : HomeListingsUiState()
+    data class Success(val listings: List<PetListing>, val averagePrice: Double) : HomeListingsUiState()
     data class Error(val message: String) : HomeListingsUiState()
 }
-
