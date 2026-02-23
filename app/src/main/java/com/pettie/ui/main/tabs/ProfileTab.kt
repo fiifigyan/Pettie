@@ -10,11 +10,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,13 +28,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.pettie.data.model.ListingStatus
 import com.pettie.ui.main.ProfileUiState
 import com.pettie.ui.main.ProfileViewModel
 
 @Composable
 fun ProfileTab(
     viewModel: ProfileViewModel = hiltViewModel(),
-    onSignOut: () -> Unit
+    onSignOut: () -> Unit,
+    onNavigateToEditProfile: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -96,7 +102,7 @@ fun ProfileTab(
                         Spacer(modifier = Modifier.height(24.dp))
 
                         Row {
-                            Button(onClick = { /* TODO: Navigate to Edit Profile */ }) {
+                            Button(onClick = onNavigateToEditProfile) {
                                 Icon(Icons.Default.Edit, contentDescription = null)
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text("Edit Profile")
@@ -124,7 +130,7 @@ fun ProfileTab(
                 if (state.listings.isEmpty()) {
                     item {
                         Text(
-                            text = "You haven't posted any listings yet.",
+                            text = "You haven\'t posted any listings yet.",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.padding(horizontal = 24.dp)
@@ -132,6 +138,8 @@ fun ProfileTab(
                     }
                 } else {
                     items(state.listings, key = { it.id }) { listing ->
+                        var expanded by remember { mutableStateOf(false) }
+
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -158,10 +166,31 @@ fun ProfileTab(
                                     )
                                 }
 
-                                Column(modifier = Modifier.padding(start = 16.dp)) {
+                                Column(modifier = Modifier.padding(start = 16.dp).weight(1f)) {
                                     Text(text = listing.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                                     Spacer(modifier = Modifier.height(4.dp))
                                     Text(text = "$${listing.price}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.primary)
+                                    Text(text = listing.status.name, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                }
+                                
+                                Box {
+                                    IconButton(onClick = { expanded = true }) {
+                                        Icon(Icons.Default.MoreVert, contentDescription = "More options")
+                                    }
+                                    DropdownMenu(
+                                        expanded = expanded,
+                                        onDismissRequest = { expanded = false }
+                                    ) {
+                                        ListingStatus.values().forEach { status ->
+                                            DropdownMenuItem(
+                                                text = { Text(status.name) },
+                                                onClick = {
+                                                    viewModel.updateListingStatus(listing.id, status)
+                                                    expanded = false
+                                                }
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }

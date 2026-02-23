@@ -1,37 +1,42 @@
 package com.pettie.ui.main.tabs
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.pettie.ui.main.home.components.PetListingCard
 
 @Composable
-fun FavoritesTab() {
+fun FavoritesTab(
+    viewModel: FavoritesViewModel = hiltViewModel(),
+    onNavigateToPetDetail: (String) -> Unit
+) {
+    val favoriteListings by viewModel.favoriteListings.collectAsState()
+
     Column(
-        modifier = Modifier.fillMaxSize().padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        modifier = Modifier.fillMaxSize().padding(24.dp)
     ) {
-        Icon(
-            imageVector = Icons.Default.Favorite,
-            contentDescription = null,
-            modifier = Modifier.padding(16.dp),
-            tint = MaterialTheme.colorScheme.primary
-        )
-        Text(text = "Favorites", style = MaterialTheme.typography.headlineMedium)
-        Text(
-            text = "Saved listings will appear here",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        if (favoriteListings.isEmpty()) {
+            Text("You have no favorite listings yet.")
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(favoriteListings) { listing ->
+                    PetListingCard(
+                        listing = listing,
+                        onClick = { onNavigateToPetDetail(listing.id) }
+                    )
+                }
+            }
+        }
     }
 }
