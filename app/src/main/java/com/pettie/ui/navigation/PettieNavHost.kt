@@ -14,8 +14,11 @@ import androidx.navigation.navArgument
 import com.pettie.ui.auth.ForgotPasswordScreen
 import com.pettie.ui.auth.LoginScreen
 import com.pettie.ui.auth.RegisterScreen
+import com.pettie.ui.chat.ChatListScreen
+import com.pettie.ui.chat.ChatScreen
 import com.pettie.ui.main.MainTabsScreen
 import com.pettie.ui.main.detail.PetDetailScreen
+import com.pettie.ui.main.profile.EditProfileScreen
 
 @Composable
 fun PettieNavHost(
@@ -75,6 +78,12 @@ fun PettieNavHost(
                 },
                 onNavigateToPetDetail = { petId ->
                     navController.navigate("pet_detail/$petId")
+                },
+                onNavigateToEditProfile = {
+                    navController.navigate(NavRoutes.EDIT_PROFILE)
+                },
+                onNavigateToChat = { chatId ->
+                    navController.navigate("chat/$chatId")
                 }
             )
         }
@@ -83,7 +92,33 @@ fun PettieNavHost(
             route = NavRoutes.PET_DETAIL,
             arguments = listOf(navArgument("petId") { type = NavType.StringType })
         ) {
-            PetDetailScreen()
+            PetDetailScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToChat = { chatId ->
+                    navController.navigate("chat/$chatId")
+                }
+            )
+        }
+
+        composable(NavRoutes.EDIT_PROFILE) {
+            EditProfileScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(NavRoutes.CHAT_LIST) {
+            ChatListScreen(
+                onNavigateToChat = { chatId ->
+                    navController.navigate("chat/$chatId")
+                }
+            )
+        }
+
+        composable(
+            route = NavRoutes.CHAT,
+            arguments = listOf(navArgument("chatId") { type = NavType.StringType })
+        ) {
+            ChatScreen(onNavigateBack = { navController.popBackStack() })
         }
     }
 }

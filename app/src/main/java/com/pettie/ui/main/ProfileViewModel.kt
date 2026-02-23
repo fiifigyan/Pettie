@@ -3,6 +3,7 @@ package com.pettie.ui.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.pettie.data.model.ListingStatus
 import com.pettie.data.model.PetListing
 import com.pettie.data.repository.PetListingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,6 +37,12 @@ class ProfileViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    fun updateListingStatus(listingId: String, status: ListingStatus) {
+        viewModelScope.launch {
+            repository.updateListingStatus(listingId, status)
         }
     }
 }

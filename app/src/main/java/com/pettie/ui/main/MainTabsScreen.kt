@@ -2,6 +2,7 @@ package com.pettie.ui.main
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
@@ -22,27 +23,32 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.pettie.ui.chat.ChatListScreen
 import com.pettie.ui.main.tabs.FavoritesTab
 import com.pettie.ui.main.tabs.HomeTab
 import com.pettie.ui.main.tabs.ProfileTab
 import com.pettie.ui.main.tabs.SearchTab
 import com.pettie.ui.main.tabs.SellTab
+import com.pettie.ui.navigation.NavRoutes
 
 @Composable
 fun MainTabsScreen(
     onSignOut: () -> Unit = {},
     onNavigateToPetDetail: (String) -> Unit,
+    onNavigateToEditProfile: () -> Unit,
+    onNavigateToChat: (String) -> Unit,
     navController: NavHostController = rememberNavController()
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
     val tabs = listOf(
-        TabItem("Home", Icons.Default.Home, "home"),
-        TabItem("Search", Icons.Default.Search, "search"),
-        TabItem("Sell", Icons.Outlined.Add, "sell"),
-        TabItem("Favorites", Icons.Default.Favorite, "favorites"),
-        TabItem("Profile", Icons.Default.Person, "profile")
+        TabItem("Home", Icons.Default.Home, NavRoutes.HOME),
+        TabItem("Search", Icons.Default.Search, NavRoutes.SEARCH),
+        TabItem("Sell", Icons.Outlined.Add, NavRoutes.SELL),
+        TabItem("Favorites", Icons.Default.Favorite, NavRoutes.FAVORITES),
+        TabItem("Messages", Icons.Default.Email, NavRoutes.CHAT_LIST),
+        TabItem("Profile", Icons.Default.Person, NavRoutes.PROFILE)
     )
 
     Scaffold(
@@ -70,14 +76,15 @@ fun MainTabsScreen(
     ) { padding ->
         NavHost(
             navController = navController,
-            startDestination = "home",
+            startDestination = NavRoutes.HOME,
             modifier = Modifier.padding(padding)
         ) {
-            composable("home") { HomeTab(onNavigateToPetDetail = onNavigateToPetDetail) }
-            composable("search") { SearchTab() }
-            composable("sell") { SellTab() }
-            composable("favorites") { FavoritesTab() }
-            composable("profile") { ProfileTab(onSignOut = onSignOut) }
+            composable(NavRoutes.HOME) { HomeTab(onNavigateToPetDetail = onNavigateToPetDetail) }
+            composable(NavRoutes.SEARCH) { SearchTab(onNavigateToPetDetail = onNavigateToPetDetail) }
+            composable(NavRoutes.SELL) { SellTab() }
+            composable(NavRoutes.FAVORITES) { FavoritesTab(onNavigateToPetDetail = onNavigateToPetDetail) }
+            composable(NavRoutes.CHAT_LIST) { ChatListScreen(onNavigateToChat = onNavigateToChat) }
+            composable(NavRoutes.PROFILE) { ProfileTab(onSignOut = onSignOut, onNavigateToEditProfile = onNavigateToEditProfile) }
         }
     }
 }
