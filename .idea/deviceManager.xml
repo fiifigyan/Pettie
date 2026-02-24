@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DeviceTable">
+    <option name="collapsedNodes">
+      <list>
+        <CategoryListState>
+          <option name="categories">
+            <list>
+              <CategoryState>
+                <option name="attribute" value="Status" />
+                <option name="value" value="OFFLINE" />
+              </CategoryState>
+            </list>
+          </option>
+        </CategoryListState>
+      </list>
+    </option>
     <option name="columnSorters">
       <list>
         <ColumnSorterState>
@@ -11,6 +25,9 @@
     </option>
     <option name="groupByAttributes">
       <list>
+        <option value="Status" />
+        <option value="Status" />
+        <option value="Status" />
         <option value="Status" />
         <option value="Status" />
       </list>
